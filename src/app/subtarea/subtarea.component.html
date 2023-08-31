@@ -1,0 +1,37 @@
+<p-dialog [(visible)]="varSubtarea.subTareaDialog" [style]="{width: '450px'}" header="Sub Tareas" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="nombre">Nombre</label>
+            <input type="text" pInputText id="nombre" name="nombre" [(ngModel)]="varSubtarea.subtarea.nombre" />
+        </div>
+
+        <div class="p-field">
+            <label for="nombre">Horas</label>
+            <p-inputNumber [disabled]="varSubtarea.subtarea.estado !== 'NUEVA'" [(ngModel)]="varSubtarea.subtarea.horas" [showButtons]="true" mode="decimal"></p-inputNumber>
+        </div>
+
+
+        <div class="p-field">
+            <label for="estado">Estado</label>
+            <p-autoComplete [(ngModel)]="varSubtarea.subtarea.estado" [suggestions]="estados" (completeMethod)="getEstados()" [dropdown]="true">
+                <ng-template let-vestado pTemplate="nombre">
+                    <div class="country-item">
+                      <div>{{vestado}}</div>
+                    </div>
+                  </ng-template>
+            </p-autoComplete>
+        </div>
+
+        <div class="p-field" style="text-align: center;">
+            <label for="estado">Porcentaje</label>
+            <p-knob [(ngModel)]="varSubtarea.subtarea.porcentaje"></p-knob>
+        </div>
+
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogSubTarea()"></button>
+        <button *ngIf="varSubtarea.subtarea.id" pButton pRipple label="Actualizar" icon="pi pi-check" class="p-button-text" (click)="actualizarSubTarea()"></button>
+        <button *ngIf="!varSubtarea.subtarea.id" pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="guardarSubTarea()"></button>
+    </ng-template>
+</p-dialog>

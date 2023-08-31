@@ -1,0 +1,155 @@
+<p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left"></ng-template>
+    <ng-template pTemplate="right">
+        <button pButton pRipple label="Nueva Tarea" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="abrirModal(null)"></button>
+    </ng-template>
+</p-toolbar>
+
+<p-toast></p-toast>
+
+<p-table [value]="tareas" dataKey="nombre" [tableStyle]="{'min-width': '60rem'}" [paginator]="true" [rows]="10" >
+   
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 5rem"></th>
+           
+            <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"> </p-sortIcon>
+                <p-columnFilter type="text" field="nombre" display="menu"></p-columnFilter>
+            </th>
+           
+        
+
+           
+                <th pSortableColumn="persona.nombre" >Asignado a:   <p-sortIcon field="persona.nombre"></p-sortIcon>
+                <p-columnFilter type="text" field="persona.nombre" display="menu"></p-columnFilter></th>
+          
+                <th pSortableColumn="sprint" style="text-align: center;" >sprint <p-sortIcon field="sprint"></p-sortIcon>
+                <p-columnFilter type="text" field="sprint" display="menu"></p-columnFilter></th>
+          
+                <th pSortableColumn="porcentaje">Porcentaje <p-sortIcon field="porcentaje"></p-sortIcon>
+                <p-columnFilter type="text" field="porcentaje" display="menu"></p-columnFilter></th>
+          
+                <th pSortableColumn="estado">Estado<p-sortIcon field="estado"></p-sortIcon>
+                <p-columnFilter type="text" field="estado" display="menu"></p-columnFilter></th>
+          
+                <th>Acciones</th>
+        </tr>
+    </ng-template>
+    
+    <ng-template pTemplate="body" let-tarea let-expanded="expanded">
+        <tr>
+            <td>
+              <button type="button" pButton pRipple [pRowToggler]="tarea" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+            </td>
+            <td>{{tarea.nombre}}</td>
+            <td>{{tarea.persona.nombre}}</td>
+            <td style="text-align: center;">{{tarea.sprint}}</td>
+            <td><p-knob [size]="50" [(ngModel)]="tarea.porcentaje" [disabled]="true" ></p-knob></td>
+            <td><span [class]="'product-badge estado-' + tarea.estado.toLowerCase()">{{tarea.estado}}</span></td>
+            <td>
+                <p-button icon="pi pi-pencil" styleClass="p-button-warning" (onClick)="abrirModal(tarea)"></p-button>
+                {{" "}}
+                <p-button icon="pi pi-times-circle" styleClass="p-button-danger" (onClick)="deleteTarea(tarea.id)"></p-button>
+            </td>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-tarea >
+        <tr>
+            <td colspan="7">
+                <div class="p-3">
+                    <p-table [value]="tarea.subTareas" dataKey="id">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th style="width: 10rem"></th>
+                                <th pSortableColumn="nombre">Concepto <p-sortIcon field="concepto"></p-sortIcon></th>
+                                <th pSortableColumn="horas">Horas <p-sortIcon field="horas"></p-sortIcon></th>
+                                <th pSortableColumn="estado">Estado <p-sortIcon field="estado"></p-sortIcon></th>
+                                <th>Acciones</th>
+                                <th *ngIf="tarea.estado=='NUEVA'" ><button pButton icon="pi pi-plus" class="p-button-success p-mr-2" (click)="abrirModalSubTarea(null, tarea)"></button></th>
+                                <th style="width: 4rem"></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-subTarea>
+                            <tr>
+                                <th style="width: 10rem"></th>
+                                <td>{{subTarea.nombre}}</td>
+                                <td>{{subTarea.horas}}</td>
+                                <td><span [class]="'order-badge order-' + subTarea.estado.toLowerCase()">{{subTarea.estado}}</span></td>
+                                <td>
+                                    <p-button icon="pi pi-pencil" styleClass="p-button-warning" (onClick)="abrirModalSubTarea(subTarea, tarea)"></p-button>
+                                    {{" "}}
+                                    <p-button icon="pi pi-times-circle" styleClass="p-button-danger" (onClick)="deleteSubTarea(subTarea.id)"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6">No existen tareas para este requerimiento</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<p-dialog [(visible)]="tareaDialog" [style]="{width: '450px'}" header="Tarea Detalle" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="nombre">Nombre</label>
+            <input type="text" pInputText id="nombre" name="nombre" [(ngModel)]="tarea.nombre" />
+            <small class="p-invalid" *ngIf="submitted && !tarea.nombre">Nombre es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="persona">Persona</label>
+
+            <p-autoComplete [(ngModel)]="persona" [suggestions]="personas" (completeMethod)="traerPersonas()" [dropdown]="true" field="nombre">
+                <ng-template let-persona pTemplate="nombre">
+                    <div class="country-item">
+                      <div>{{persona.nombre}}</div>
+                    </div>
+                  </ng-template>
+            </p-autoComplete>
+
+            <small class="p-invalid" *ngIf="submitted && !persona">Persona es requerido.</small>
+        </div>
+
+        <div *ngIf="tarea.id" >
+            <div class="p-field">
+                <label for="estado">Estado</label>
+                <p-autoComplete [(ngModel)]="estado" [suggestions]="estados" (completeMethod)="getEstados()" [dropdown]="true">
+                    <ng-template let-vestado pTemplate="nombre">
+                        <div class="country-item">
+                          <div>{{vestado}}</div>
+                        </div>
+                      </ng-template>
+                </p-autoComplete>
+            </div>
+            <!-- <div class="p-field">
+                <label for="porcentaje">Porcentaje</label>
+                <p-rating  [(ngModel)]="vrating" [readonly]="false" [cancel]="false"></p-rating>
+            </div> -->
+        </div>
+
+        <div class="p-field">
+            <label for="sprint">Sprint</label>
+            <p-inputNumber [(ngModel)]="tarea.sprint" [min]="1" [max]="40" [showButtons]="true" mode="decimal"></p-inputNumber>
+            <div>
+                <small class="p-invalid" *ngIf="submitted && !tarea.sprint">sprint es requerido.</small>
+            </div>
+            
+            <small class="p-invalid" *ngIf="submitted && tarea.sprint < 1">sprint no puede ser menor a 1</small>
+        </div>
+
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveTarea()"></button>
+    </ng-template>
+</p-dialog>
+
+<app-subtarea></app-subtarea>

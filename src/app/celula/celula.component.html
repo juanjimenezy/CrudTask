@@ -1,0 +1,72 @@
+<div class ="card">
+    
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left"></ng-template>
+
+        <ng-template pTemplate="right">
+            <button pButton pRipple label="Nueva celula" icon="pi pi-plus" class="p-button-success" (click)="showModal(null)"></button>
+        </ng-template>
+    </p-toolbar>
+    <p-table [value]="lstCelulas" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header" let-lstCelulas>
+            <tr>
+                <th pSortableColumn="id">{{msgEs.labels.id}}  <p-sortIcon field="id"></p-sortIcon>
+                    <p-columnFilter type="text" field="id" display="menu"></p-columnFilter></th>
+                <th pSortableColumn="nombre" >{{msgEs.labels.nombre}}
+                    <p-sortIcon field="id"></p-sortIcon>
+                    <p-columnFilter type="text" field="nombre" display="menu"></p-columnFilter>                    
+                </th>
+                <th pSortableColumn="productOwner" >{{msgEs.labels.productowner}}
+
+                    <p-sortIcon field="id"></p-sortIcon>
+                    <p-columnFilter type="text" field="productOwner" display="menu"></p-columnFilter>
+                </th>
+                <th pSortableColumn="proyecto" >{{msgEs.labels.proyecto}}
+
+                    <p-sortIcon field="id"></p-sortIcon>
+                    <p-columnFilter type="text" field="proyecto" display="menu"></p-columnFilter>
+                </th>
+                <th >{{msgEs.labels.acciones}}</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-lstCelulas let-columns="columns">
+            <tr>
+                <td>{{lstCelulas.id}}</td>
+                <td>{{lstCelulas.nombre}}</td>
+                <td>{{lstCelulas.productOwner}}</td>
+                <td>{{lstCelulas.proyecto}}</td>
+                <td>
+                    <p-button icon="pi pi-pencil" styleClass="p-button-warning" (onClick)="showModal(lstCelulas)" ></p-button>
+                    {{" "}}
+                    <p-button icon="pi pi-times-circle" styleClass="p-button-danger" (onClick)="deleteCelula(lstCelulas.id)"></p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-toast></p-toast>
+<p-dialog [(visible)]="celulaDialog" [style]="{width: '450px'}" header="Agregar celula." [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="nombre">{{msgEs.labels.nombre}}</label>
+            <input type="text" pInputText id="nombre" name="nombre" [(ngModel)]="celula.nombre" />
+            <small class="p-invalid" *ngIf="!celula.nombre">{{msgEs.smalls.nombre}}</small>
+        </div>
+        <div class="p-field">
+            <label for="productOwner">{{msgEs.labels.productowner}}</label>
+            <input type="text" pInputText id="productOwner" name="productOwner" [(ngModel)]="celula.productOwner" />
+            <small class="p-invalid" *ngIf="!celula.productOwner">{{msgEs.smalls.productowner}}</small>
+        </div>
+        <div class="p-field">
+            <label for="proyecto">{{msgEs.labels.proyecto}}</label>
+            <input type="text" pInputText id="proyecto" name="proyecto" [(ngModel)]="celula.proyecto" />
+            <small class="p-invalid" *ngIf="!celula.proyecto">{{msgEs.smalls.proyecto}}</small>
+        </div>
+    </ng-template>
+    
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="send()"></button>
+    </ng-template>
+    
+</p-dialog>

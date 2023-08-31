@@ -1,0 +1,183 @@
+<p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left"></ng-template>
+    <ng-template pTemplate="right">
+        <button pButton pRipple label="Nueva persona" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="abrirModal(null)"></button>
+    </ng-template>
+</p-toolbar>
+
+<p-table [value]="personas" dataKey="id" [tableStyle]="{'min-width': '60rem'}" [paginator]="true" [rows]="10">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon>
+                <p-columnFilter type="text" field="nombre" display="menu"></p-columnFilter>
+            </th>
+            <th pSortableColumn="nickName">Nick <p-sortIcon field="nickName"></p-sortIcon>
+                <p-columnFilter type="text" field="nickName" display="menu"></p-columnFilter>
+            </th>
+            <th pSortableColumn="numeroIdentificacion">Identificacion <p-sortIcon field="numeroIdentificacion"></p-sortIcon>
+                <p-columnFilter type="text" field="numeroIdentificacion" display="menu"></p-columnFilter>
+            </th>
+            
+            <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon>
+                <p-columnFilter type="text" field="email" display="menu"></p-columnFilter>
+            </th>
+            <th pSortableColumn="idRol.nombreRol">Rol <p-sortIcon field="idRol.nombreRol"></p-sortIcon>
+                <p-columnFilter type="text" field="idRol.nombreRol" display="menu"></p-columnFilter>
+            </th>
+            <th>Acciones </th>
+            <th>Tareas </th>
+        </tr>
+
+    </ng-template>
+
+    <ng-template pTemplate="body" let-personas let-expanded="expanded">
+        <tr>
+
+            <td>{{personas.nombre}}</td>
+            <td>{{personas.nickName}}</td>
+            <td>{{personas.numeroIdentificacion}}</td>
+            <td>{{personas.email}}</td>
+            <td>{{personas.idRol.nombreRol}}</td>
+
+            <td>
+                <p-button icon="pi pi-pencil" styleClass="p-button-warning" (click)="abrirModalAC(personas)"></p-button>
+                {{" "}}
+                <p-button icon="pi pi-times-circle" styleClass="p-button-danger" (onClick)="deletePersona(personas.id)"></p-button>
+            </td>
+            <td>
+                <button type="button" pButton pRipple [pRowToggler]="personas" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="rowexpansion" let-personas>
+        <tr>
+            <td colspan="7">
+                <div class="p-p-3">
+                    <p-table [value]="personas.tareas" dataKey="nombre">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Tarea:</th>
+                                <th pSortableColumn="sprint" >sprint <p-sortIcon field="sprint"></p-sortIcon></th>
+                                <th pSortableColumn="porcentaje">Porcentaje <p-sortIcon field="porcentaje"></p-sortIcon></th>
+                                <th pSortableColumn="estado">Estado<p-sortIcon field="estado"></p-sortIcon></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-tarea let-expanded="expanded">
+                            <tr>
+
+                                <td>{{tarea.nombre}}</td>
+                                <td >{{tarea.sprint}}</td>
+                                <td disabled="true" ><p-knob [(ngModel)]="tarea.porcentaje" [disabled]="true" ></p-knob></td>
+                                <td><span [class]="'product-badge estado-' + tarea.estado.toLowerCase()">{{tarea.estado}}</span></td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6">No se encuentran Tareas para este usuario.</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+
+
+
+<p-dialog [(visible)]="personaDialog" [style]="{width: '450px'}" header="Persona Nueva" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="nombre">Nombre</label>
+            <input type="text" pInputText id="nombre" name="nombre" [(ngModel)]="persona.nombre" />
+            <small class="p-invalid" *ngIf="submitted && !persona.nombre">Nombre es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="numeroIdentificacion">Identificacion</label>
+            <input type="text" pInputText id="numeroIdentificacion" name="numeroIdentificacion" [(ngModel)]="persona.numeroIdentificacion" />
+            <small class="p-invalid" *ngIf="submitted && !persona.numeroIdentificacion">Numero de Identificacion es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="nombreRol">Rol</label>
+
+            <p-autoComplete [(ngModel)]="rol" [suggestions]="roles" (completeMethod)="traerRoles()" [dropdown]="true" field="nombreRol">
+                <ng-template let-rol pTemplate="nombreRol">
+                    <div class="country-item">
+                      <div>{{rol.nombreRol}}</div>
+                    </div>
+                  </ng-template>
+            </p-autoComplete>
+
+            <small class="p-invalid" *ngIf="submitted && !rol">Rol es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="email">Email</label>
+            <input type="text" pInputText id="nombre" name="email" [(ngModel)]="persona.email" />
+            <small class="p-invalid" *ngIf="submitted && !persona.email">Email es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="nickName">Nick</label>
+            <input type="text" pInputText id="nickName" name="nickName" [(ngModel)]="persona.nickName" />
+            <small class="p-invalid" *ngIf="submitted && !persona.nickName">Nick es requerido.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+        <button pButton pRipple label="Guardar" icon="pi pi-check" class="p-button-text" (click)="saveTarea()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="personaDialogAC" [style]="{width: '450px'}" header="Actualizar Persona" [modal]="true" styleClass="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="p-field">
+            <label for="nombre">Nombre</label>
+            <input type="text" pInputText id="nombre" name="nombre" [(ngModel)]="persona.nombre" />
+            <small class="p-invalid" *ngIf="submitted && !persona.nombre">Nombre es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="numeroIdentificacion">Identificacion</label>
+            <input type="text" pInputText id="numeroIdentificacion" name="numeroIdentificacion" [(ngModel)]="persona.numeroIdentificacion" />
+            <small class="p-invalid" *ngIf="submitted && !persona.numeroIdentificacion">Numero de Identificacion es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="nombreRol">Rol</label>
+
+            <p-autoComplete [(ngModel)]="rol" [suggestions]="roles" (completeMethod)="traerRoles()" [dropdown]="true" field="nombreRol">
+                <ng-template let-rol pTemplate="nombreRol">
+                    <div class="country-item">
+                      <div>{{rol.nombreRol}}</div>
+                    </div>
+                  </ng-template>
+            </p-autoComplete>
+
+            <small class="p-invalid" *ngIf="submitted && !rol">Rol es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="email">Email</label>
+            <input type="text" pInputText id="nombre" name="email" [(ngModel)]="persona.email" />
+            <small class="p-invalid" *ngIf="submitted && !persona.email">Email es requerido.</small>
+        </div>
+
+        <div class="p-field">
+            <label for="nickName">Nick</label>
+            <input type="text" pInputText id="nickName" name="nickName" [(ngModel)]="persona.nickName" />
+            <small class="p-invalid" *ngIf="submitted && !persona.nickName">Nick es requerido.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton pRipple label="Cancelar" icon="pi pi-times" class="p-button-text" (click)="hideDialogAC()"></button>
+        <button pButton pRipple label="Actualizar" icon="pi pi-check" class="p-button-text" (click)="saveTarea()"></button>
+    </ng-template>
+</p-dialog>
+<p-toast></p-toast>

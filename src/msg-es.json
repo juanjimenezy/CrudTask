@@ -1,0 +1,55 @@
+{
+    "celula": {
+        "alertas": {
+            "success": {
+                "severity": "success",
+                "summary": "Petición Exitosa.",
+                "detail": "Se creo un nuevo registro.",
+                "detailEliminar": "Se elimino satisfactoriamente el registro.",
+                "detailUpdate": "Se actualizo satisfactoriamente el registro."
+            },
+            "warn": {
+                "severity": "warn",
+                "summary": "Datos incompletos.",
+                "detail": "Porfavor diligencie completamente el formulario."
+            },
+            "error": {
+                "severity": "error",
+                "summary": "Upps.",
+                "detail": "No existe el registro que esta intentando eliminar.",
+                "detailGuardar": "No se pudo crear el nuevo registro"
+            }
+        },
+        "labels":{
+            "id":"ID",
+            "nombre":"Nombre",
+            "productowner":"ProductOwner",
+            "proyecto":"Proyecto",
+            "acciones": "Acciones"
+        },
+        "smalls":{
+            "nombre":"Nombre es requerido.",
+            "productowner":"ProductOwner es requerido.",
+            "proyecto":"Proyecto es requerido."
+        }
+    },
+    "Tarea" : {
+        "Alertas": {
+            "success": {
+                "severity": "success",
+                "summary": "Petición Exitosa.",
+                "detail": "Se han actualizado los datos."
+            },
+            "warn": {
+                "severity": "warn",
+                "summary": "Datos incompletos",
+                "detail": "Porfavor diligencie completamente el formulario."
+            },
+            "requireds" : {
+                "severity": "warn",
+                "summary": "Informacion incompleta.",
+                "detail": "Por favor diligencie la informacion correctamente."
+            }
+        }
+    }
+}
