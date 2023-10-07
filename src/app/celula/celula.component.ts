@@ -15,6 +15,8 @@ import jsonMsj from '../../../src/msg-es.json';
 export class CelulaComponent implements OnInit {
   constructor(private celulaService: CelulaService, private messageService: MessageService) { }
 
+  selectedDate: Date;
+  selectedDate2: Date;
   lstCelulas: Celula[] = [];
   celula: Celula = null;
   celulaDialog: boolean = false;

@@ -16,18 +16,18 @@ export class CelulaService {
 
   constructor(private http: HttpClient, private globals : Globals){}
   listar() {
-    return this.http.get<any>(`${this.globals.vhost}/MScrudTask/celula/get/all`);
+    return this.http.get<any>(`${this.globals.vhost}/celula/get/all`);
   }
 
   agregar(celula:Celula): Observable<Celula>{
-    return this.http.post<any>(`${this.globals.vhost}/MScrudTask/celula`, (btoa(JSON.stringify(celula))));
+    return this.http.post<any>(`${this.globals.vhost}/celula`, (btoa(JSON.stringify(celula))));
   }
 
   actualizar(celula:Celula){
-    return this.http.put<any>(`${this.globals.vhost}/MScrudTask/celula`,celula);
+    return this.http.put<any>(`${this.globals.vhost}/celula`,celula);
   }
 
   eliminar(id:any){
-    return this.http.delete<any>(`${this.globals.vhost}/MScrudTask/celula/delete/${id}`);
+    return this.http.delete<any>(`${this.globals.vhost}/celula/delete/${id}`);
   }
 }

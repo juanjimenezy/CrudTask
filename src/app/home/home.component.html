@@ -1,1 +1,18 @@
-<p>home works!</p>
+<div class="login-container">
+  <div class="login-box">
+    <h2>Iniciar Sesión</h2>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-user"></i>
+      </span>
+      <input id="username" type="text" pInputText [(ngModel)]="username" placeholder="Usuario" />
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-lock"></i>
+      </span>
+      <input id="password" type="password" pInputText [(ngModel)]="password" placeholder="Contraseña" />
+    </div>
+    <button type="button" pButton (click)="login()" label="Iniciar Sesión" class="p-button-success"></button>
+  </div>
+</div>

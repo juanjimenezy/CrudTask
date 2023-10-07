@@ -23,7 +23,7 @@
         "labels":{
             "id":"ID",
             "nombre":"Nombre",
-            "productowner":"ProductOwner",
+            "productowner":"Empresa",
             "proyecto":"Proyecto",
             "acciones": "Acciones"
         },
